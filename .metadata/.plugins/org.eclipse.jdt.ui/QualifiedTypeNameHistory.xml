@@ -9,4 +9,6 @@
 <fullyQualifiedTypeName name="android.R"/>
 <fullyQualifiedTypeName name="android.R.drawable"/>
 <fullyQualifiedTypeName name="android.content.Context"/>
+<fullyQualifiedTypeName name="android.graphics.Bitmap"/>
+<fullyQualifiedTypeName name="android.content.res.Resources"/>
 </qualifiedTypeNameHistroy>
