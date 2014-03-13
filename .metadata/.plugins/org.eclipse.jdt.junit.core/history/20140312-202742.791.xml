@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testrun name="LocationLabTest" project="LocationLabTest" tests="3" started="3" failures="0" errors="0" ignored="0">
+  <testsuite name="Nexus4_Api18_IntelAtom [emulator-5554]" time="47.012">
+    <testsuite name="course.labs.locationlab.test.TestOneValidLocation" time="12.713">
+      <testcase name="testRun " classname="course.labs.locationlab.test.TestOneValidLocation" time="12.713"/>
+    </testsuite>
+    <testsuite name="course.labs.locationlab.test.TestSameLocation" time="17.077">
+      <testcase name="testRun " classname="course.labs.locationlab.test.TestSameLocation" time="17.077"/>
+    </testsuite>
+    <testsuite name="course.labs.locationlab.test.TestTwoValidLocations" time="17.222">
+      <testcase name="testRun " classname="course.labs.locationlab.test.TestTwoValidLocations" time="17.222"/>
+    </testsuite>
+  </testsuite>
+</testrun>
