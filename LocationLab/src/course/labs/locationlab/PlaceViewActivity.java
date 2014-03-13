@@ -9,12 +9,13 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class PlaceViewActivity extends ListActivity implements LocationListener {
@@ -43,12 +44,16 @@ public class PlaceViewActivity extends ListActivity implements LocationListener 
         // TODO - Set up the app's user interface
         // This class is a ListActivity, so it has its own ListView
         // ListView's adapter should be a PlaceViewAdapter
-
+		mLocationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+		
+		mAdapter = new PlaceViewAdapter(getApplicationContext());
 		
         // TODO - add a footerView to the ListView
         // You can use footer_view.xml to define the footer
-
-
+		// XML File only has a TextView in it
+		LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		TextView footerView = (TextView) inflater.inflate(R.layout.footer_view,  null);
+		getListView().addFooterView(footerView);
 		
         // TODO - When the footerView's onClick() method is called, it must issue the
         // following log call
@@ -68,8 +73,37 @@ public class PlaceViewActivity extends ListActivity implements LocationListener 
         // solution is to disable the footerView until you have a location.
         // Issue the following log call:
         // log("Location data is not available");
- 		
+ 		footerView.setOnClickListener(new OnClickListener(){
 
+			@Override
+			public void onClick(View arg0) {
+				log("Entered footerView.OnClickListener.onClick()");
+				
+				if (mLastLocationReading != null) {
+					ArrayList<PlaceRecord> placeList = mAdapter.getList();
+					for (int i = 0; i < placeList.size(); i++)
+					{
+						PlaceRecord place = placeList.get(i);
+						if (place.intersects(mLastLocationReading)) {
+							log("You already have this location badge");
+							Toast.makeText(getApplicationContext(), "You already have this location badge", Toast.LENGTH_SHORT).show();
+							return;
+						}
+					}
+					
+					log("Starting Place Download");
+					PlaceDownloaderTask task = new PlaceDownloaderTask(PlaceViewActivity.this);
+					task.execute(mLastLocationReading);
+				}
+				else {
+					log("Location data is not available");
+					Toast.makeText(getApplicationContext(), "Current Location is unavailable", Toast.LENGTH_SHORT).show();
+				}
+			}
+ 			
+ 		});
+ 		
+ 		getListView().setAdapter(mAdapter);
 	}
 
 	@Override
@@ -81,13 +115,18 @@ public class PlaceViewActivity extends ListActivity implements LocationListener 
 
         // TODO - Check NETWORK_PROVIDER for an existing location reading.
         // Only keep this last reading if it is fresh - less than 5 minutes old.
-
-	
+		mLastLocationReading = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 		
-        // TODO - register to receive location updates from NETWORK_PROVIDER
-
-
+		if (mLastLocationReading != null) {
+			long currentAge = age(mLastLocationReading);
+			if (currentAge > FIVE_MINS) {
+				mLastLocationReading = null;
+			}
+		}
 		
+		// TODO - register to receive location updates from NETWORK_PROVIDER
+		mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,  mMinTime, mMinDistance, this);
+			
 	}
 
 	@Override
@@ -96,8 +135,7 @@ public class PlaceViewActivity extends ListActivity implements LocationListener 
 		mMockLocationProvider.shutdown();
 
 		// TODO - unregister for location updates
-
-
+		mLocationManager.removeUpdates(this);
 		
 		super.onPause();
 	}
@@ -120,7 +158,15 @@ public class PlaceViewActivity extends ListActivity implements LocationListener 
         // the current location
         // 3) If the current location is newer than the last locations, keep the
         // current location.
-
+		
+		// I realize this could be an || (OR), but it looked funny
+		if (mLastLocationReading == null) {
+			mLastLocationReading = currentLocation;
+		}
+		else if (age(currentLocation) < age(mLastLocationReading)) {
+			mLastLocationReading = currentLocation;
+		}
+		// Ignoring if those aren't hit
 
 	}
 
