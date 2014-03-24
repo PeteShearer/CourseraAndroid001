@@ -11,4 +11,9 @@
 <fullyQualifiedTypeName name="android.content.Context"/>
 <fullyQualifiedTypeName name="android.graphics.Bitmap"/>
 <fullyQualifiedTypeName name="android.content.res.Resources"/>
+<fullyQualifiedTypeName name="android.view.LayoutInflater"/>
+<fullyQualifiedTypeName name="course.labs.locationlab.R.layout"/>
+<fullyQualifiedTypeName name="android.widget.TextView"/>
+<fullyQualifiedTypeName name="course.labs.locationlab.PlaceDownloaderTask"/>
+<fullyQualifiedTypeName name="android.widget.ListView"/>
 </qualifiedTypeNameHistroy>
